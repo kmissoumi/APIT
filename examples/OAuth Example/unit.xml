@@ -1,0 +1,8 @@
+<unit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="main" xsi:noNamespaceSchemaLocation="http://apifortress.com/app/unit.xsd"><requirements></requirements><configs></configs><sequence name="main"><tag value="${env}"/><post url="http://${domain}/api/retail/user" params="[:]" var="userPayload" mode="json"><header name="key" value="${key}"/><postBody contentType="application/json"><![CDATA[{"user":"${user}",
+ "password":${pass}}]]></postBody></post><set var="access_token" value="${userPayload.Token}"/><comment><![CDATA[Token generated ${access_token}]]></comment><comment><![CDATA[Token Generated and Stored]]></comment><put url="http://${domain}/api/retail/cart" params="[:]" var="payload" mode="json"><header name="key" value="${key}"/><header name="usertoken" value="${access_token}"/><putBody contentType="application/json"><![CDATA[{
+	"1": 1,
+	"2": 2,
+	"3": 3,
+	"9": 3,
+	"8": 1
+}]]></putBody></put><get url="http://${domain}/api/retail/cart" params="[:]" var="cartPayload" mode="json"><header name="key" value="${key}"/><header name="usertoken" value="${access_token}"/></get><each expression="cartPayload"><if expression="cartPayload.id==3"><assert-is expression="_1.id" type="integer"/><set var="id" value="${_1.id}"/><assert-exists expression="_1.item"  mode="all"/></if><comment><![CDATA[testing item ${_1.id}]]></comment><assert-is expression="_1.quantity" type="integer"/></each><comment><![CDATA[${cartPayload[1].item}]]></comment></sequence></unit>
